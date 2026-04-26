@@ -1,47 +1,95 @@
-#board {
-  display: grid;
-  grid-template-columns: auto auto auto;
-  background-color: #2196F3;
-  padding: 10px
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
-.cell {
-  background-color: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(0, 0, 0, 0.8);
-  padding: 20px;
-  font-size: 30px;
-  height: 25vmin;
+/* Main container */
+#root > div {
   text-align: center;
 }
 
+/* Instructions */
+#instructions {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+/* Board */
+#board {
+  display: grid;
+  grid-template-columns: repeat(3, 80px);
+  gap: 10px;
+  justify-content: center;
+}
+
+/* Cell */
+.cell {
+  width: 80px;
+  height: 80px;
+  background: white;
+  border-radius: 10px;
+  border: 2px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+/* Hover effect */
+.cell.playable:hover {
+  background: #e0f0ff;
+  transform: scale(1.05);
+}
+
+/* Buttons */
 #bottombar {
-  height: 5vh;
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+button {
+  padding: 8px 16px;
+  font-size: 14px;
+  border: none;
+  border-radius: 8px;
+  background: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #0056b3;
+}
+
+.cell.playable:hover {
+  transform: scale(1.1);
 }
 
 #instructions {
-  height: 5vh;
-  background-color: white;
-  padding: 0px;
-  margin: 0px;
-  text-align: center;
-  border: 1px solid black;
+  color: #333;
 }
 
-#bottombar button {
-  width: 50%;
-  /* height: 100%; */
-  margin: 0;
-  padding: 0;
-  position: relative;
-  float: left;
-  font-size: 2vw
+#instructions.win {
+  color: green;
 }
 
-html,
-body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
+#instructions.draw {
+  color: orange;
 }
 
-.playable { background-color: red;}
+.win-cell {
+  background: #b6f5b6;
+}

@@ -5,15 +5,43 @@ import java.util.Arrays;
 public class GameState {
 
     private final Cell[] cells;
+    private final String currentPlayer;
+    private final String winner;
+    private final boolean draw;
 
-    private GameState(Cell[] cells) {
-        this.cells = cells;
-    }
+    private GameState(Cell[] cells, String currentPlayer, String winner, boolean draw) {
+    this.cells = cells;
+    this.currentPlayer = currentPlayer;
+    this.winner = winner;
+    this.draw = draw;
+}
 
     public static GameState forGame(Game game) {
-        Cell[] cells = getCells(game);
-        return new GameState(cells);
+    Cell[] cells = getCells(game);
+
+    String currentPlayer = game.getPlayer() == Player.PLAYER0 ? "X" : "O";
+
+    Player win = game.getWinner();
+    String winner = null;
+    if (win != null) {
+        winner = (win == Player.PLAYER0) ? "X" : "O";
     }
+
+    boolean draw = true;
+
+        for (Cell c : cells) {
+            if (c.getText().equals("")) {
+                draw = false;
+                break;
+            }
+        }
+
+        if (winner != null) {
+            draw = false;
+        }
+
+    return new GameState(cells, currentPlayer, winner, draw);
+}
 
     public Cell[] getCells() {
         return this.cells;
@@ -26,8 +54,18 @@ public class GameState {
     @Override
     public String toString() {
         return """
-                { "cells": %s}
-                """.formatted(Arrays.toString(this.cells));
+                {
+                "cells": %s,
+                "currentPlayer": "%s",
+                "winner": %s,
+                "draw": %b
+                }
+                """.formatted(
+                    Arrays.toString(this.cells),
+                    this.currentPlayer,
+                    this.winner == null ? "null" : "\"" + this.winner + "\"",
+                    this.draw
+                );
     }
 
     private static Cell[] getCells(Game game) {

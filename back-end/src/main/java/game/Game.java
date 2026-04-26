@@ -3,6 +3,7 @@ package game;
 import java.util.ArrayList;
 import java.util.List;
 
+
 enum Player {
     PLAYER0(0), PLAYER1(1);
 
@@ -41,15 +42,40 @@ public class Game {
     }
 
     public Game play(int x, int y) {
-        if (this.board.getCell(x, y) != null)
-            return this;
-        if (this.getWinner() != null)
-            return this;
-        List<Game> newHistory = new ArrayList<>(this.history);
-        newHistory.add(this);
-        Player nextPlayer = this.player == Player.PLAYER0 ? Player.PLAYER1 : Player.PLAYER0;
-        return new Game(this.board.updateCell(x, y, this.player), nextPlayer, newHistory);
+    if (this.board.getCell(x, y) != null)
+        return this;
+
+    if (this.getWinner() != null)
+        return this;
+
+   
+    List<Game> newHistory = new ArrayList<>(this.history);
+    
+    newHistory.add(this);
+
+    Player nextPlayer = this.player == Player.PLAYER0 ? Player.PLAYER1 : Player.PLAYER0;
+
+        return new Game(
+            this.board.updateCell(x, y, this.player),
+            nextPlayer,
+            newHistory
+        );
     }
+
+    public Game undo() {
+    if (this.history.isEmpty()) {
+        return this;
+    }
+
+    List<Game> newHistory = new ArrayList<>(this.history);
+    Game previous = newHistory.remove(newHistory.size() - 1);
+
+    return new Game(
+        previous.getBoard(),
+        previous.getPlayer(),
+        newHistory
+    );
+}
 
     public Player getWinner() {
         for (int row = 0; row < 3; row++)

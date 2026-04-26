@@ -25,6 +25,7 @@ interface Props { }
  */
 class App extends React.Component<Props, GameState> {
   private initialized: boolean = false;
+  
 
   /**
    * @param props has type Props
@@ -34,7 +35,13 @@ class App extends React.Component<Props, GameState> {
     /**
      * state has type GameState as specified in the class inheritance.
      */
-    this.state = { cells: [] }
+    this.state = {
+      cells: [],
+      currentPlayer: "",
+      winner: undefined,
+      draw: false
+    }
+    
   }
 
   /**
@@ -45,7 +52,12 @@ class App extends React.Component<Props, GameState> {
   newGame = async () => {
     const response = await fetch('/newgame');
     const json = await response.json();
-    this.setState({ cells: json['cells'] });
+    this.setState({
+      cells: json['cells'],
+      currentPlayer: json['currentPlayer'],
+      winner: json['winner'],
+      draw: json['draw']
+    });
   }
 
   /**
@@ -61,7 +73,12 @@ class App extends React.Component<Props, GameState> {
       e.preventDefault();
       const response = await fetch(`/play?x=${x}&y=${y}`)
       const json = await response.json();
-      this.setState({ cells: json['cells'] });
+      this.setState({
+        cells: json['cells'],
+        currentPlayer: json['currentPlayer'],
+        winner: json['winner'],
+        draw: json['draw']
+      });
     }
   }
 
@@ -102,6 +119,18 @@ class App extends React.Component<Props, GameState> {
     }
   }
 
+  undo = async () => {
+  const response = await fetch('/undo');
+  const json = await response.json();
+
+  this.setState({
+    cells: json['cells'],
+    currentPlayer: json['currentPlayer'],
+    winner: json['winner'],
+    draw: json['draw']
+  });
+}
+
   /**
    * The only method you must define in a React.Component subclass.
    * @returns the React element via JSX.
@@ -115,13 +144,20 @@ class App extends React.Component<Props, GameState> {
      */
     return (
       <div>
+        <div id="instructions" className={this.state.winner ? "win" : this.state.draw ? "draw" : ""}>
+          {this.state.winner
+            ? `${this.state.winner} wins!`
+            : this.state.draw
+            ? "Draw!"
+            : `${this.state.currentPlayer}'s turn`}
+        </div>
         <div id="board">
           {this.state.cells.map((cell, i) => this.createCell(cell, i))}
         </div>
         <div id="bottombar">
           <button onClick={/* get the function, not call the function */this.newGame}>New Game</button>
           {/* Exercise: implement Undo function */}
-          <button>Undo</button>
+          <button onClick={this.undo}>Undo</button>
         </div>
       </div>
     );
